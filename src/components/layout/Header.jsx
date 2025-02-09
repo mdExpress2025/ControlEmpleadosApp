@@ -35,7 +35,7 @@ export default function Header() {
   const toggleDropdown = () => setIsOpen(!isOpen);
 
   return (
-    <div className="fixed top-0 right-0 p-4 z-50 bg-gray-100">
+    <div className="fixed top-0 right-0 p-4 z-50 ">
       <div className="relative">
         <button
           onClick={toggleDropdown}
