@@ -137,7 +137,7 @@ function FormInicio() {
 
       <div className="App flex flex-col items-center h-[1000px] overflow-hidden font-mono bg-gray-100 ">
         <div className="m-4 mt-[50px]">
-          <h2 className="text-[30px] text-center">CONTROL DE EMPLEADOS DIARIO</h2>
+          <h2 className="text-[25px] text-center">CONTROL DIARIO</h2>
         </div>
         <div className="flex flex-col items-center gap-4 bg-slate-300 h-[760px] w-[330px] rounded-xl p-4 text-[15px]">
           <div className="flex justify-center w-full m-5">
