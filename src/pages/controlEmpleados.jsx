@@ -135,7 +135,7 @@ function FormInicio() {
     <RouteGuard permission="todas">
 
 
-      <div className="App flex flex-col items-center min-h-screen h-screen overflow-hidden font-mono bg-gray-100 mt-10">
+      <div className="App flex flex-col items-center h-[1100px] overflow-hidden font-mono bg-gray-100 ">
         <div className="m-4 mt-[50px]">
           <h2 className="text-[30px] text-center">CONTROL DE EMPLEADOS DIARIO</h2>
         </div>
