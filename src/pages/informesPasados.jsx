@@ -254,7 +254,11 @@ function InformePasado() {
                 { header: 'Total Horas', dataKey: 'totalHoras' }
             ];
 
-            const detalleData = Object.values(resumenDetallado);
+            const detalleData = Object.values(resumenDetallado).sort((a, b) => {
+                const empleadoComp = a.empleado.localeCompare(b.empleado);
+                if (empleadoComp !== 0) return empleadoComp;
+                return a.lugar.localeCompare(b.lugar);
+            });
 
             // Agregar título para la nueva tabla
             doc.setFontSize(20);
