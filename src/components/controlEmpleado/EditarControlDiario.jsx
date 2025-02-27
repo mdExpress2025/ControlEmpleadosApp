@@ -70,7 +70,7 @@ export default function EditarControlDiario() {
 
     const itemsPerPage = 5;
 
-    const totalPages = Math.ceil(empleados.length / itemsPerPage);
+    const totalPages = Math.ceil(registros.length || 0 / itemsPerPage);
 
     const handlePageChange = (page) => {
         setCurrentPage(page);
@@ -199,7 +199,7 @@ export default function EditarControlDiario() {
                             </thead>
                             <tbody className="divide-y divide-gray-200">
                                 {paginatedRows.length > 0 && paginatedRows.map((r) => {
-                                    const fechaForm = new Date(r.fecha).toLocaleDateString();
+                                    const fechaForm = new Date(r.fecha).toISOString().split("T")[0];
                                     return(
                                         <tr
                                             key={r._id}
