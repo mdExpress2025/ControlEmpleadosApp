@@ -1,4 +1,6 @@
 import clientPromise from "@/lib/mongodb";
+import { ObjectId } from "mongodb";
+
 
 export default async function RegistroDiarios(req, res) {
 
@@ -19,12 +21,12 @@ export default async function RegistroDiarios(req, res) {
                 };
             }
             if (supervisorId) {
-                query['supervisor._id']=supervisorId
+                query['supervisor._id'] = supervisorId
             }
 
             const ObtenerRegistrosDiarios = await collect.find(query).toArray();
 
-        
+
             if (!ObtenerRegistrosDiarios.length > 0) {
                 return res.status(404).json({ error: 'No se encontraron registros diarios' });
             }
@@ -44,17 +46,17 @@ export default async function RegistroDiarios(req, res) {
             res.status(500).json({ error: 'Error al traer registros diarios' });
         }
     }
-    if (req.method == "POST") {
+    else if (req.method == "POST") {
         try {
-            const { fecha, empleado, horas, lugar, presentismo, boleto, supervisor,adelanto } = req.body;
+            const { fecha, empleado, horas, lugar, presentismo, boleto, supervisor, adelanto } = req.body;
 
-            if (!fecha || !empleado || !horas || !lugar || !supervisor || !(adelanto>=0)) {
+            if (!fecha || !empleado || !horas || !lugar || !supervisor || !(adelanto >= 0)) {
                 return res.status(400).json({ error: 'Faltan datos' });
             }
 
             const convertirFecha = new Date(fecha);
             let total = parseFloat(horas) * parseFloat(lugar.precio)
-            const registroDiario = { fecha: convertirFecha, empleado, horas, lugar, total, presentismo, boleto, supervisor:supervisor,adelanto };
+            const registroDiario = { fecha: convertirFecha, empleado,horas: parseFloat(horas), lugar, total, presentismo, boleto, supervisor: supervisor,adelanto: parseFloat(adelanto) };
             const result = await collect.insertOne(registroDiario);
 
             res.status(201).json({ message: 'Registro diario guardado', id: result.insertedId });
@@ -64,6 +66,26 @@ export default async function RegistroDiarios(req, res) {
             res.status(500).json({ error: 'Error al guardar registros diarios' });
         }
 
+    }
+    else if (req.method === "PUT") {
+        try {
+            const { id,horas, adelanto, fecha ,precio} = req.body;
+            console.log(id,horas, adelanto, fecha ,precio)
+            if (!horas ||!fecha||!id||!precio) return res.status(400).json({ error: "Faltan datos" })
+
+            const idObject = ObjectId.createFromHexString(id)
+            const total=parseFloat(horas) * parseFloat(precio)
+            const fechaFomr=new Date(fecha)
+            const editar = await collect.updateOne(
+                { _id: idObject },
+                { $set: { horas: parseFloat(horas),adelanto:parseFloat(adelanto),fecha:fechaFomr,total:total } }
+            )
+            if (editar.matchedCount === 0) return res.status(400).json({ error: "registro no encontrado" });
+
+            res.status(200).json({ message: "registro actualizado con exito!" })
+        } catch (error) {
+
+        }
     }
 
 }

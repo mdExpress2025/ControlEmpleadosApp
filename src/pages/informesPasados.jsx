@@ -99,8 +99,8 @@ function InformePasado() {
             doc.text(`Período: ${informeElegido.fechaIni} al ${informeElegido.fechaFin}`, 20, 35);
 
             // Calcular totales
-            const totalHoras = registro.reduce((sum, reg) => sum + (reg.horas || 0), 0);
-            const totalMonto = registro.reduce((sum, reg) => sum + (reg.total || 0), 0);
+            const totalHoras = registro.reduce((sum, reg) => sum + (parseFloat(reg.horas) || 0), 0);
+            const totalMonto = registro.reduce((sum, reg) => sum + (parseFloat(reg.total) || 0), 0);
 
             // Ordenar registros por fecha, empleado y lugar
             const registrosOrdenados = [...registro].sort((a, b) => {
@@ -120,17 +120,20 @@ function InformePasado() {
                 { header: 'Lugar', dataKey: 'lugar' },
                 { header: 'Precio/Hora', dataKey: 'precioHora' },
                 { header: 'Horas', dataKey: 'horas' },
-                { header: 'Total', dataKey: 'total' }
+                { header: 'Adelanto', dataKey: 'adelanto' },
+                { header: 'Total', dataKey: 'total' },
             ];
 
-            const tableData = registrosOrdenados.map(reg => ({
-                fecha: new Date(reg.fecha).toISOString().split('T')[0],
-                empleado: reg.empleado?.nombre || "N/A",
-                lugar: reg.lugar?.nombre || "N/A",
-                precioHora: `$${(reg.lugar.precio || 0).toLocaleString()}`,
-                horas: reg.horas || 0,
-                total: `$${(reg.total || 0).toLocaleString()}`
+            const tableData = registrosOrdenados.map(registro => ({
+                fecha: new Date(registro.fecha).toISOString().split('T')[0],
+                empleado: registro.empleado.nombre,
+                lugar: registro.lugar.nombre,
+                precioHora: `$${registro.lugar.precio.toLocaleString()}`,
+                horas: registro.horas,
+                total: `$${(registro.total - registro.adelanto).toLocaleString()}`,
+                adelanto: `$${registro.adelanto.toLocaleString()}`
             }));
+
 
             // Generar tabla
             doc.autoTable({
@@ -165,12 +168,19 @@ function InformePasado() {
                     acc[key] = {
                         horas: 0,
                         total: 0,
+                        adelanto: 0,
+                        horaPromedio: 0,
+                        precioLugar: 0,
                         presentismo: "",
-                        boleto: ""
+                        boleto: "",
+
                     };
                 }
-                acc[key].horas += reg.horas;
-                acc[key].total += reg.total;
+                acc[key].horaPromedio += 1;
+                acc[key].precioLugar += parseFloat(reg.lugar.precio);
+                acc[key].horas += parseFloat(reg.horas);
+                acc[key].total += parseFloat(reg.total) || 0;
+                acc[key].adelanto += parseFloat(reg.adelanto) || 0;
                 acc[key].nombre = reg.empleado.nombre;
                 acc[key].alias = reg.empleado.alias;
                 acc[key].presentismo = reg.presentismo == " " ? "" : reg.presentismo;
@@ -183,22 +193,33 @@ function InformePasado() {
             doc.text("Resumen por Empleado", 105, finalY + 20, { align: "center" });
 
             const resumenColumns = [
-                { header: 'Empleado', dataKey: 'nombre' },
+                { header: 'Emp.', dataKey: 'nombre' },
                 { header: 'Alias', dataKey: 'alias' },
-                { header: 'Horas', dataKey: 'horas' },
+                { header: 'Hs', dataKey: 'horas' },
+                { header: '$/Hs Prom.', dataKey: 'horasPromedio' },
+                { header: 'Subt.', dataKey: 'subtotal' },
+                { header: 'Adel.', dataKey: 'adelanto' },
                 { header: 'Total', dataKey: 'total' },
-                { header: 'Presentismo', dataKey: 'presentismo' },
-                { header: 'Boleto Interurbano', dataKey: 'boleto' }
+                { header: 'Pres.', dataKey: 'presentismo' },
+                { header: 'Boleto I.U.', dataKey: 'boleto' }
             ];
+            const resumenData = Object.values(resumenPorEmpleado).map(datos => {
+                const subtotal = parseFloat(datos.total || 0);
+                const total = subtotal - parseFloat(datos.adelanto || 0);
+                const horaPromedio = parseFloat(datos.precioLugar || 0) / parseFloat(datos.horaPromedio);
 
-            const resumenData = Object.values(resumenPorEmpleado).map(datos => ({
-                nombre: datos.nombre,
-                alias: datos.alias,
-                horas: datos.horas,
-                total: `$${datos.total.toLocaleString()}`,
-                presentismo: datos.presentismo || "Sin datos",
-                boleto: datos.boleto || "Sin datos"
-            }));
+                return {
+                    nombre: datos.nombre,
+                    alias: datos.alias,
+                    horas: datos.horas,
+                    horasPromedio: `$${(horaPromedio || 0).toLocaleString()}`,
+                    adelanto: `$${(datos.adelanto || 0).toLocaleString()}`,
+                    subtotal: `$${subtotal.toLocaleString()}`,
+                    total: `$${total.toLocaleString()}`,
+                    presentismo: datos.presentismo || "Sin datos",
+                    boleto: datos.boleto || "Sin datos"
+                };
+            });
 
             // Generar tabla de resumen
             doc.autoTable({
@@ -224,9 +245,8 @@ function InformePasado() {
             const resumenDetallado = registrosOrdenados.reduce((acc, reg) => {
                 const empleado = reg.empleado.nombre;
                 const lugar = reg.lugar.nombre;
-                const horas = reg.horas;
+                const horas = parseFloat(reg.horas);
 
-                // Crear una clave única que incluya empleado, lugar y horas
                 const key = `${empleado}-${lugar}-${horas}`;
 
                 if (!acc[key]) {
@@ -254,11 +274,13 @@ function InformePasado() {
                 { header: 'Total Horas', dataKey: 'totalHoras' }
             ];
 
+
             const detalleData = Object.values(resumenDetallado).sort((a, b) => {
                 const empleadoComp = a.empleado.localeCompare(b.empleado);
                 if (empleadoComp !== 0) return empleadoComp;
                 return a.lugar.localeCompare(b.lugar);
             });
+
 
             // Agregar título para la nueva tabla
             doc.setFontSize(20);

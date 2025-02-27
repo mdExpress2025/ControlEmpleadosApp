@@ -76,8 +76,8 @@ function Informe() {
             doc.text(`Período: ${fechaIni} al ${fechaFin}`, 20, 35);
 
             // Calcular totales
-            const totalHoras = registroDiario.reduce((sum, reg) => sum + reg.horas, 0);
-            const totalMonto = registroDiario.reduce((sum, reg) => sum + reg.total, 0);
+            const totalHoras = registroDiario.reduce((sum, reg) => sum + parseFloat(reg.horas), 0);
+            const totalMonto = registroDiario.reduce((sum, reg) => sum + parseFloat(reg.total), 0);
 
             // Ordenar registros por fecha, empleado y lugar
             const registrosOrdenados = [...registroDiario].sort((a, b) => {
@@ -154,7 +154,7 @@ function Informe() {
                 }
                 acc[key].horaPromedio += 1;
                 acc[key].precioLugar += parseFloat(reg.lugar.precio);
-                acc[key].horas += reg.horas;
+                acc[key].horas += parseFloat(reg.horas)||0;
                 acc[key].total += parseFloat(reg.total) || 0;
                 acc[key].adelanto += parseFloat(reg.adelanto) || 0;
                 acc[key].nombre = reg.empleado.nombre;
@@ -227,7 +227,7 @@ function Informe() {
             const resumenDetallado = registrosOrdenados.reduce((acc, reg) => {
                 const empleado = reg.empleado.nombre;
                 const lugar = reg.lugar.nombre;
-                const horas = reg.horas;
+                const horas = parseFloat(reg.horas);
 
                 const key = `${empleado}-${lugar}-${horas}`;
 
