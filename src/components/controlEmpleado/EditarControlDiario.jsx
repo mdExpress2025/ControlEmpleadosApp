@@ -20,7 +20,7 @@ export default function EditarControlDiario() {
     const token = sessionStorage.getItem("token");
     const decodetoken = token ? jwtDecode(token) : null;
     const supervisor = decodetoken ? decodetoken : null;
-    const TABLE_HEAD = ["Empleado", "Lugar", "Fecha", "Prec/hr", "Horas", "Adelanto", "Total","Presentismo", "Editar"];
+    const TABLE_HEAD = ["Empleado", "Lugar", "Fecha", "Prec/hr", "Horas", "Adelanto", "Total","Presentismo","Boleto I.U", "Editar"];
 
 
     useEffect(() => {
