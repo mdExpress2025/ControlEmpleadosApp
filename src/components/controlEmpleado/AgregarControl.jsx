@@ -93,7 +93,7 @@ function AgregarControlDiario() {
     if (!(new Date(fechaHoy).toDateString() === ultimoDiaDelMesActual.toDateString()) && (presentismo || boleto)) {
       return notyf.error("Solo se puede cargar presentismo o boleto en el último día del mes");
     }
-    else if ((new Date(fechaHoy).toDateString() === ultimoDiaDelMesActual.toDateString()) && (presentismo>=0 && boleto)) {
+    else if ((new Date(fechaHoy).toDateString() === ultimoDiaDelMesActual.toDateString()) && (presentismo && boleto>=0)) {
       ponerDatos = true;
     }
 

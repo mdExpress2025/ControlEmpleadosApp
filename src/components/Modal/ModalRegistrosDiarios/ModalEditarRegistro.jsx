@@ -6,6 +6,7 @@ import notyf from "@/utils/notificacion";
 import { X } from "lucide-react";
 function ModalEditarRegistro({ isOpen, onRequestClose, registro, notificacion }) {
 
+
     if (!registro) return null;
 
     const [horas, setHoras] = useState("")
