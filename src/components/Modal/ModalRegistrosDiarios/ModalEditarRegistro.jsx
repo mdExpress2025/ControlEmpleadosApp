@@ -96,7 +96,7 @@ function ModalEditarRegistro({ isOpen, onRequestClose, registro, notificacion })
             <Box sx={style}>
                 <div className="App flex  items-center  overflow-hidden font-mono">
 
-                    <div className="flex flex-col items-center gap-4 bg-slate-300 h-[560px] w-[330px] rounded-xl p-4 text-[15px]">
+                    <div className="flex flex-col items-center gap-4 bg-slate-300 h-[620px] w-[330px] rounded-xl p-4 text-[15px]">
                         <div className="flex justify-end">
                             <button
                                 disabled={isDisabled}
@@ -163,7 +163,7 @@ function ModalEditarRegistro({ isOpen, onRequestClose, registro, notificacion })
                                     <option value="No">No</option>
                                 </select>
                             </div>
-                            <div className="w-[300px] flex flex-col items-center">
+                            <div className="w-[300px] flex flex-col items-center mt-4">
                                 <div className="w-full text-center">
                                     <p className="mb-2 text-sm">
                                         Ingrese boleto InterUrb</p>
