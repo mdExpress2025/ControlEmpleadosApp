@@ -41,7 +41,7 @@ function ModalEditarRegistro({ isOpen, onRequestClose, registro, notificacion })
                         fecha: fecha ? fecha : registro.fecha,
                         precio: registro.lugar.precio,
                         presentismo: presentismo ? presentismo : registro.presentismo,
-                        boleto:boleto?boleto:registro.boleto
+                        boleto: boleto ? boleto : registro.boleto
                     }),
             });
             onRequestClose();
@@ -65,26 +65,6 @@ function ModalEditarRegistro({ isOpen, onRequestClose, registro, notificacion })
         }
     };
 
-    const ultimoDiaDelMesActualFun = () => {
-        if (!registro?.fecha) return false;
-
-        const fechainforme = new Date(registro.fecha);
-
-        const fechaUTC = new Date(fechainforme.getUTCFullYear(), fechainforme.getUTCMonth(), fechainforme.getUTCDate());
-
-
-        const ultimoDiaDelMesActual = new Date(
-            fechaUTC.getFullYear(),
-            fechaUTC.getMonth() + 1,
-            0
-        );
-
-        return (
-            fechaUTC.getFullYear() === ultimoDiaDelMesActual.getFullYear() &&
-            fechaUTC.getMonth() === ultimoDiaDelMesActual.getMonth() &&
-            fechaUTC.getDate() === ultimoDiaDelMesActual.getDate()
-        );
-    };
 
 
 
@@ -147,10 +127,7 @@ function ModalEditarRegistro({ isOpen, onRequestClose, registro, notificacion })
                             />
                         </div>
 
-                        {ultimoDiaDelMesActualFun() && <div>
-
-
-
+                        <div>
                             <div className="flex flex-col items-center w-full mt-3">
                                 <p className="mb-2">Presentimo</p>
                                 <select className="border rounded-md p-2 w-[220px] "
@@ -179,7 +156,7 @@ function ModalEditarRegistro({ isOpen, onRequestClose, registro, notificacion })
                             </div>
                         </div>
 
-                        }
+
 
 
 
