@@ -20,7 +20,7 @@ export default function EditarControlDiario() {
     const token = sessionStorage.getItem("token");
     const decodetoken = token ? jwtDecode(token) : null;
     const supervisor = decodetoken ? decodetoken : null;
-    const TABLE_HEAD = ["Empleado", "Lugar", "Fecha", "Prec/hr", "Horas", "Adelanto", "Total", "Editar"];
+    const TABLE_HEAD = ["Empleado", "Lugar", "Fecha", "Prec/hr", "Horas", "Adelanto", "Total","Presentismo", "Editar"];
 
 
     useEffect(() => {
@@ -225,6 +225,9 @@ export default function EditarControlDiario() {
                                             </td>
                                             <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
                                                 ${r.total}
+                                            </td>
+                                            <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
+                                                {r.presentismo}
                                             </td>
                                             <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap space-x-2 flex">
                                                 <button

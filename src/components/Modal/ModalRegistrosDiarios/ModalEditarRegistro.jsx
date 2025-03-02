@@ -38,7 +38,7 @@ function ModalEditarRegistro({ isOpen, onRequestClose, registro, notificacion })
                         adelanto: adelanto ? adelanto : registro.adelanto,
                         fecha: fecha ? fecha : registro.fecha,
                         precio: registro.lugar.precio,
-                        presentismo:presentismo?presentismo:" "
+                        presentismo: presentismo ? presentismo : ""
                     }),
             });
             onRequestClose();
@@ -61,6 +61,18 @@ function ModalEditarRegistro({ isOpen, onRequestClose, registro, notificacion })
             setIsDisabled(false)
         }
     };
+
+    const ultimoDiaDelMesActualFun = () => {
+        const fechainforme = new Date(registro.fecha);
+        const ultimoDiaDelMesActual = new Date(
+            fechainforme.getFullYear(),
+            fechainforme.getMonth() + 1,
+            0
+        );
+
+        if (new Date(fechainforme).toDateString() === ultimoDiaDelMesActual.toDateString()) return true
+        else return false
+    }
 
 
     return (
@@ -121,19 +133,22 @@ function ModalEditarRegistro({ isOpen, onRequestClose, registro, notificacion })
                                 value={adelanto}
                             />
                         </div>
+                        
+                        {ultimoDiaDelMesActualFun() &&
+                            <div className="flex flex-col items-center w-full mt-3">
+                                <p className="mb-2">Presentimo</p>
+                                <select className="border rounded-md p-2 w-[220px] "
+                                    defaultValue=""
+                                    onChange={(e) => setPresentismo(e.target.value)} >
+                                    <option value="" disabled>
+                                        Seleccione una opción
+                                    </option>
+                                    <option value="Si">Si</option>
+                                    <option value="No">No</option>
+                                </select>
+                            </div>
+                        }
 
-                        <div className="flex flex-col items-center w-full mt-3">
-                            <p className="mb-2">Presentimo</p>
-                            <select className="border rounded-md p-2 w-[220px] "
-                                defaultValue=""
-                                onChange={(e) => setPresentismo(e.target.value)} >
-                                <option value="" disabled>
-                                    Seleccione una opción
-                                </option>
-                                <option value="Si">Si</option>
-                                <option value="No">No</option>
-                            </select>
-                        </div>
 
                         <div className="flex justify-center mt-5">
                             <button className={`border border-white py-2 px-4 rounded-xl ${!isDisabled ? 'hover:bg-white duration-300 hover:scale-105' : 'opacity-50 cursor-not-allowed'}`}
