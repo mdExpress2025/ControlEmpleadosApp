@@ -74,8 +74,8 @@ export default async function RegistroDiarios(req, res) {
             if (!horas || !fecha || !id || !precio) return res.status(400).json({ error: "Faltan datos" })
 
 
-            const idObject = ObjectId.createFromHexString(id)
-            const total = parseFloat(horas) * parseFloat(precio)
+            const idObject = ObjectId.createFromHexString(id);
+            const total = parseFloat(horas) * parseFloat(precio);
             const fechaFomr = new Date(fecha)
 
 
@@ -90,6 +90,25 @@ export default async function RegistroDiarios(req, res) {
             res.status(200).json({ message: "registro actualizado con exito!" })
         } catch (error) {
 
+        }
+
+    }
+    else if (req.method === "DELETE") {
+        try {
+            const {id}=req.query;
+
+            if(!id)return res.status(400).json({error:"Faltan datos"});
+
+            const idObject=ObjectId.createFromHexString(id);
+            
+            const deletRegis =await collect.deleteOne({_id:idObject})
+
+            if(deletRegis.deletedCount) return res.status(200).json({message:"Archivo eliminado"});
+
+            return res.status(401).json({message:"registro no encontrado"});
+
+        } catch (error) {
+            console.log(error);
         }
     }
 

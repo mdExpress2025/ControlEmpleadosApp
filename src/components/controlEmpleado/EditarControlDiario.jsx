@@ -3,9 +3,9 @@
 import { useState, useEffect } from "react"
 import { jwtDecode } from "jwt-decode";
 import notyf from "@/utils/notificacion";
-import {  Edit } from "lucide-react"
+import { Edit, Trash2 } from "lucide-react"
 import ModalEditarRegistro from "../Modal/ModalRegistrosDiarios/ModalEditarRegistro";
-
+import ModalBorrarRegistros from "../Modal/ModalRegistrosDiarios/ModalBorrarRegistro";
 export default function EditarControlDiario() {
     const [isDisabled, setIsDisabled] = useState(false);
     const [isOpenModalEditar, setIsOpenModalEditar] = useState(false);
@@ -20,7 +20,7 @@ export default function EditarControlDiario() {
     const token = sessionStorage.getItem("token");
     const decodetoken = token ? jwtDecode(token) : null;
     const supervisor = decodetoken ? decodetoken : null;
-    const TABLE_HEAD = ["Empleado", "Lugar", "Fecha", "Prec/hr", "Horas", "Adelanto", "Total","Presentismo","Boleto I.U", "Editar"];
+    const TABLE_HEAD = ["Empleado", "Lugar", "Fecha", "Prec/hr", "Horas", "Adelanto", "Total", "Presentismo", "Boleto I.U", "Acciones"];
 
 
     useEffect(() => {
@@ -53,20 +53,35 @@ export default function EditarControlDiario() {
         obtenerEmpleados();
     }, []);
 
-    const notificacionEdicion = (notif,regis) => {
+    const notificacionEdicion = (notif, regis) => {
         if (notif === 200) {
-          setRegistros((prev)=>{
-            const nuevoRegistro=prev.map(e=>e._id==regis._id?{...e,...regis}:e)
-            return nuevoRegistro;
-          }
-          )     
-          setRegistroSelec(null);
-          notyf.success("Registro editado con éxito");
+            setRegistros((prev) => {
+                const nuevoRegistro = prev.map(e => e._id == regis._id ? { ...e, ...regis } : e)
+                return nuevoRegistro;
+            }
+            )
+            setRegistroSelec(null);
+            notyf.success("Registro editado con éxito");
         } else {
-          notyf.error("No se pudo editar el registro");
-          setRegistroSelec(null);
+            notyf.error("No se pudo editar el registro");
+            setRegistroSelec(null);
         }
-      };
+    };
+
+    const notificacionBorrar= (notif, id) => {
+        if (notif === 200) {
+            setRegistros((prev) => {
+                const nuevoRegistro = prev.filter(r => r._id !== id )
+                return nuevoRegistro;
+            }
+            )
+            setRegistroSelec(null);
+            notyf.success("Registro Borrado con éxito");
+        } else {
+            notyf.error("No se pudo Borrar el registro");
+            setRegistroSelec(null);
+        }
+    };
 
     const itemsPerPage = 5;
 
@@ -113,13 +128,22 @@ export default function EditarControlDiario() {
 
     }
 
-    const AbrilModal=(r)=>{
+    const AbrilModal = (r) => {
         setRegistroSelec(r);
         setIsOpenModalEditar(true);
     }
-    const cerrarModal=(r)=>{
+    const cerrarModal = (r) => {
         setRegistroSelec(null);
         setIsOpenModalEditar(false);
+    }
+
+    const cerrarModalBorrar = (r) => {
+        setRegistroSelec(null);
+        setIsOpenModalBorrar(false);
+    }
+    const AbrilModalBorrar = (r) => {
+        setRegistroSelec(r);
+        setIsOpenModalBorrar(true);
     }
 
     return (
@@ -200,7 +224,7 @@ export default function EditarControlDiario() {
                             <tbody className="divide-y divide-gray-200">
                                 {paginatedRows.length > 0 && paginatedRows.map((r) => {
                                     const fechaForm = new Date(r.fecha).toISOString().split("T")[0];
-                                    return(
+                                    return (
                                         <tr
                                             key={r._id}
                                             className="hover:bg-gray-50 transition-colors duration-150"
@@ -236,11 +260,20 @@ export default function EditarControlDiario() {
                                                 <button
                                                     className="flex items-center text-orange-400 hover:text-orange-600"
                                                     aria-label="Editar"
-                                                    onClick={()=>AbrilModal(r)}
+                                                    onClick={() => AbrilModal(r)}
                                                 >
-                                                    <Edit className="w-4 h-4 mr-1" 
+                                                    <Edit className="w-4 h-4 mr-1"
                                                     />
                                                     Editar
+                                                </button>
+
+                                                <button
+                                                    className="flex items-center text-red-600 hover:text-red-900"
+                                                    aria-label="Delete"
+                                                    onClick={() => AbrilModalBorrar(r)}
+                                                >
+                                                    <Trash2 className="w-4 h-4 mr-1" />
+                                                    Borrar
                                                 </button>
                                             </td>
                                         </tr>
@@ -269,7 +302,8 @@ export default function EditarControlDiario() {
                     ))}
                 </div>
             )}
-            <ModalEditarRegistro isOpen={isOpenModalEditar} onRequestClose={cerrarModal} registro={registroSelec} notificacion={notificacionEdicion}/>
+            <ModalEditarRegistro isOpen={isOpenModalEditar} onRequestClose={cerrarModal} registro={registroSelec} notificacion={notificacionEdicion} />
+            <ModalBorrarRegistros isOpen={isOpenModalBorrar} onRequestClose={cerrarModalBorrar} registro={registroSelec} notificacion={notificacionBorrar}/>
 
         </div>
     )

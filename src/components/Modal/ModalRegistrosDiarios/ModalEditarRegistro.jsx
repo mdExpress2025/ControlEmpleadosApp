@@ -50,7 +50,7 @@ function ModalEditarRegistro({ isOpen, onRequestClose, registro, notificacion })
                     const horasFloat = horas ? parseFloat(horas) : parseFloat(registro.horas)
                     const total = parseFloat(registro.lugar.precio) * horasFloat;
                     const fechaForm = new Date(fecha ? fecha : registro.fecha)
-                    notificacion(200, { _id: id, horas: horas ? horas : registro.horas, adelanto: adelanto ? adelanto : registro.adelanto, fecha: fechaForm, total: total })
+                    notificacion(200, { _id: id, horas: horas ? horas : registro.horas, adelanto: adelanto ? adelanto : registro.adelanto, fecha: fechaForm, total: total,presentismo: presentismo ? presentismo : registro.presentismo, boleto: boleto ? boleto : registro.boleto})
                 } else {
                     notificacion(400)
                 }

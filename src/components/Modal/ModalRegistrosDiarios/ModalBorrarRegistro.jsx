@@ -3,10 +3,10 @@
 import { useState } from "react";
 import { Modal, Box } from "@mui/material"
 
-function ModalBorrarInformePasados ({ isOpen,onRequestClose,informe, notificacion }) {
+function ModalBorrarRegistros ({ isOpen,onRequestClose,registro, notificacion }) {
     const [isDeleting, setIsDeleting] = useState(false);
 
-    if (!informe) return null;
+    if (!registro) return null;
 
     const style = {
         position: 'absolute',
@@ -19,19 +19,19 @@ function ModalBorrarInformePasados ({ isOpen,onRequestClose,informe, notificacio
         p: 4,
     };
 
-    const eliminarInforme = async () => {
+    const eliminarRegistro = async () => {
         if (isDeleting) return;
 
         setIsDeleting(true);
         try {
-            const response = await fetch(`/api/Informe?informeId=${informe._id}`, {
+            const response = await fetch(`/api/RegistrosDiarios?id=${registro._id}`, {
                 method: "DELETE"
             });
 
             onRequestClose();
             setTimeout(() => {
                 if (response.status === 200) {
-                    notificacion(200);
+                    notificacion(200,registro._id);
                 } else {
                     notificacion(400);
                 }
@@ -45,6 +45,7 @@ function ModalBorrarInformePasados ({ isOpen,onRequestClose,informe, notificacio
             setIsDeleting(false);
         }
     };
+    const fecha=new Date(registro.fecha).toISOString().split("T")[0];
 
     return (
         <Modal
@@ -52,7 +53,7 @@ function ModalBorrarInformePasados ({ isOpen,onRequestClose,informe, notificacio
             onClose={onRequestClose}
         >
             <Box sx={style}>
-                <div className="h-[190px] w-[160px] rounded-[10px] font-mono">
+                <div className="h-[190px] w-[160px] rounded-[30px] font-mono">
                     <div className="flex justify-end">
                         <button
                             className="border border-black px-[8px] rounded-[10px] hover:scale-105 transition-transform duration-300"
@@ -63,11 +64,11 @@ function ModalBorrarInformePasados ({ isOpen,onRequestClose,informe, notificacio
                         </button>
                     </div>
                     <h3 className="mt-2 mb-4">
-                        ¿Estás seguro de eliminar el informe con la fecha <b>{informe.fechaInforme}</b>?
+                        ¿Estás seguro de eliminar el registro con la fecha <b>{fecha}</b>?
                     </h3>
                     <div className="flex justify-center">
                         <button
-                            onClick={eliminarInforme}
+                            onClick={eliminarRegistro}
                             disabled={isDeleting}
                             className={`
                             bg-green-600 py-1 px-[20px] mr-4 rounded-[10px] 
@@ -98,7 +99,7 @@ function ModalBorrarInformePasados ({ isOpen,onRequestClose,informe, notificacio
     );
 };
 
-export default ModalBorrarInformePasados;
+export default ModalBorrarRegistros;
 
 
 
