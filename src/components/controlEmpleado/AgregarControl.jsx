@@ -111,7 +111,7 @@ function AgregarControlDiario() {
           presentismo: ponerDatos ? presentismo : " ",
           boleto: ponerDatos ? boleto : " ",
           supervisor: { nombre: supervisor.nombre, _id: supervisor.user },
-          adelanto: adelanto == "" ? 0 : adelanto
+          adelanto: adelanto === "" ? 0 : adelanto
         }),
       });
 

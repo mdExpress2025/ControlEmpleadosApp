@@ -50,7 +50,7 @@ export default async function RegistroDiarios(req, res) {
         try {
             const { fecha, empleado, horas, lugar, presentismo, boleto, supervisor, adelanto } = req.body;
 
-            if (!fecha || !empleado || !horas || !lugar || !supervisor || !(adelanto >= 0)) {
+            if (!fecha || !empleado || !horas || !lugar || !supervisor ) {
                 return res.status(400).json({ error: 'Faltan datos' });
             }
 
