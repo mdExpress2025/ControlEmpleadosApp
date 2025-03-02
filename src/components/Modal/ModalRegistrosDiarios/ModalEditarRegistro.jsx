@@ -63,16 +63,26 @@ function ModalEditarRegistro({ isOpen, onRequestClose, registro, notificacion })
     };
 
     const ultimoDiaDelMesActualFun = () => {
+        if (!registro?.fecha) return false;
+    
         const fechainforme = new Date(registro.fecha);
+
+        const fechaUTC = new Date(fechainforme.getUTCFullYear(), fechainforme.getUTCMonth(), fechainforme.getUTCDate());
+    
+
         const ultimoDiaDelMesActual = new Date(
-            fechainforme.getFullYear(),
-            fechainforme.getMonth() + 1,
+            fechaUTC.getFullYear(),
+            fechaUTC.getMonth() + 1, 
             0
         );
-
-        if (new Date(fechainforme).toDateString() === ultimoDiaDelMesActual.toDateString()) return true
-        else return false
-    }
+    
+        return (
+            fechaUTC.getFullYear() === ultimoDiaDelMesActual.getFullYear() &&
+            fechaUTC.getMonth() === ultimoDiaDelMesActual.getMonth() &&
+            fechaUTC.getDate() === ultimoDiaDelMesActual.getDate()
+        );
+    };
+    
 
 
     return (
@@ -133,7 +143,7 @@ function ModalEditarRegistro({ isOpen, onRequestClose, registro, notificacion })
                                 value={adelanto}
                             />
                         </div>
-                        
+
                         {ultimoDiaDelMesActualFun() &&
                             <div className="flex flex-col items-center w-full mt-3">
                                 <p className="mb-2">Presentimo</p>
