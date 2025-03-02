@@ -12,6 +12,7 @@ function ModalEditarRegistro({ isOpen, onRequestClose, registro, notificacion })
     const [horas, setHoras] = useState("")
     const [adelanto, setAdelanto] = useState("")
     const [presentismo, setPresentismo] = useState("")
+    const [boleto, setBoleto] = useState("")
     const [fecha, setFecha] = useState("");
     const [id, setid] = useState(registro._id);
     const [isDisabled, setIsDisabled] = useState(false)
@@ -39,7 +40,8 @@ function ModalEditarRegistro({ isOpen, onRequestClose, registro, notificacion })
                         adelanto: adelanto ? adelanto : registro.adelanto,
                         fecha: fecha ? fecha : registro.fecha,
                         precio: registro.lugar.precio,
-                        presentismo: presentismo ? presentismo : ""
+                        presentismo: presentismo ? presentismo : registro.presentismo,
+                        boleto:boleto?boleto:registro.boleto
                     }),
             });
             onRequestClose();
@@ -65,25 +67,25 @@ function ModalEditarRegistro({ isOpen, onRequestClose, registro, notificacion })
 
     const ultimoDiaDelMesActualFun = () => {
         if (!registro?.fecha) return false;
-    
+
         const fechainforme = new Date(registro.fecha);
 
         const fechaUTC = new Date(fechainforme.getUTCFullYear(), fechainforme.getUTCMonth(), fechainforme.getUTCDate());
-    
+
 
         const ultimoDiaDelMesActual = new Date(
             fechaUTC.getFullYear(),
-            fechaUTC.getMonth() + 1, 
+            fechaUTC.getMonth() + 1,
             0
         );
-    
+
         return (
             fechaUTC.getFullYear() === ultimoDiaDelMesActual.getFullYear() &&
             fechaUTC.getMonth() === ultimoDiaDelMesActual.getMonth() &&
             fechaUTC.getDate() === ultimoDiaDelMesActual.getDate()
         );
     };
-    
+
 
 
     return (
@@ -145,7 +147,10 @@ function ModalEditarRegistro({ isOpen, onRequestClose, registro, notificacion })
                             />
                         </div>
 
-                        {ultimoDiaDelMesActualFun() &&
+                        {ultimoDiaDelMesActualFun() && <div>
+
+
+
                             <div className="flex flex-col items-center w-full mt-3">
                                 <p className="mb-2">Presentimo</p>
                                 <select className="border rounded-md p-2 w-[220px] "
@@ -158,7 +163,25 @@ function ModalEditarRegistro({ isOpen, onRequestClose, registro, notificacion })
                                     <option value="No">No</option>
                                 </select>
                             </div>
+                            <div className="w-[300px] flex flex-col items-center">
+                                <div className="w-full text-center">
+                                    <p className="mb-2 text-sm">
+                                        Ingrese boleto InterUrb</p>
+                                </div>
+                                <input
+                                    className="rounded-md p-2 w-[220px]"
+                                    type="number"
+                                    placeholder={registro.boleto}
+                                    onChange={(e) => { let a = e.target.value; if (Number(a) >= 0) { setBoleto(e.target.value) } else setBoleto("") }}
+                                    min={0}
+                                    value={boleto}
+                                />
+                            </div>
+                        </div>
+
                         }
+
+
 
 
                         <div className="flex justify-center mt-5">

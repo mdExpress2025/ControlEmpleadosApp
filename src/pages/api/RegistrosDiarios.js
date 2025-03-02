@@ -69,7 +69,7 @@ export default async function RegistroDiarios(req, res) {
     }
     else if (req.method === "PUT") {
         try {
-            const { id, horas, adelanto, fecha, precio, presentismo } = req.body;
+            const { id, horas, adelanto, fecha, precio, presentismo, boleto } = req.body;
 
             if (!horas || !fecha || !id || !precio) return res.status(400).json({ error: "Faltan datos" })
 
@@ -78,21 +78,13 @@ export default async function RegistroDiarios(req, res) {
             const total = parseFloat(horas) * parseFloat(precio)
             const fechaFomr = new Date(fecha)
 
-            if (presentismo) {
 
-                const editar = await collect.updateOne(
-                    { _id: idObject },
-                    { $set: { horas: parseFloat(horas), adelanto: parseFloat(adelanto), fecha: fechaFomr, total: total, presentismo: presentismo } }
-                )
+            const editar = await collect.updateOne(
+                { _id: idObject },
+                { $set: { horas: parseFloat(horas), adelanto: parseFloat(adelanto), fecha: fechaFomr, total: total, presentismo: presentismo, boleto: boleto } }
+            )
 
-                if (editar.matchedCount === 0) return res.status(400).json({ error: "registro no encontrado" });
-            } else {
-                const editarCPres = await collect.updateOne(
-                    { _id: idObject },
-                    { $set: { horas: parseFloat(horas), adelanto: parseFloat(adelanto), fecha: fechaFomr, total: total} }
-                )
-                if (editarCPres.matchedCount === 0) return res.status(400).json({ error: "registro no encontrado" });
-            }
+            if (editar.matchedCount === 0) return res.status(400).json({ error: "registro no encontrado" });
 
 
             res.status(200).json({ message: "registro actualizado con exito!" })

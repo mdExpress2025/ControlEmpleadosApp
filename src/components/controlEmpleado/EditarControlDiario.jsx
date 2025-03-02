@@ -229,6 +229,9 @@ export default function EditarControlDiario() {
                                             <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
                                                 {r.presentismo}
                                             </td>
+                                            <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
+                                                {r.boleto}
+                                            </td>
                                             <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap space-x-2 flex">
                                                 <button
                                                     className="flex items-center text-orange-400 hover:text-orange-600"
