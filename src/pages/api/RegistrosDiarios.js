@@ -69,8 +69,8 @@ export default async function RegistroDiarios(req, res) {
     }
     else if (req.method === "PUT") {
         try {
-            const { id,horas, adelanto, fecha ,precio} = req.body;
-            console.log(id,horas, adelanto, fecha ,precio)
+            const { id,horas, adelanto, fecha ,precio,presentismo} = req.body;
+
             if (!horas ||!fecha||!id||!precio) return res.status(400).json({ error: "Faltan datos" })
 
             const idObject = ObjectId.createFromHexString(id)
@@ -78,7 +78,7 @@ export default async function RegistroDiarios(req, res) {
             const fechaFomr=new Date(fecha)
             const editar = await collect.updateOne(
                 { _id: idObject },
-                { $set: { horas: parseFloat(horas),adelanto:parseFloat(adelanto),fecha:fechaFomr,total:total } }
+                { $set: { horas: parseFloat(horas),adelanto:parseFloat(adelanto),fecha:fechaFomr,total:total,presentismo:presentismo } }
             )
             if (editar.matchedCount === 0) return res.status(400).json({ error: "registro no encontrado" });
 

@@ -10,6 +10,7 @@ function ModalEditarRegistro({ isOpen, onRequestClose, registro, notificacion })
 
     const [horas, setHoras] = useState("")
     const [adelanto, setAdelanto] = useState("")
+    const [presentismo, setPresentismo] = useState("")
     const [fecha, setFecha] = useState("");
     const [id, setid] = useState(registro._id);
     const [isDisabled, setIsDisabled] = useState(false)
@@ -24,7 +25,7 @@ function ModalEditarRegistro({ isOpen, onRequestClose, registro, notificacion })
 
     const editarRegistro = async () => {
         if (isDisabled) return;
-        if (!horas && !adelanto && !fecha) return notyf.error("No se realizaron cambios")
+        if (!horas && !adelanto && !fecha && !presentismo) return notyf.error("No se realizaron cambios")
         try {
             setIsDisabled(true);
             const resul = await fetch("/api/RegistrosDiarios", {
@@ -36,16 +37,17 @@ function ModalEditarRegistro({ isOpen, onRequestClose, registro, notificacion })
                         horas: horas ? horas : registro.horas,
                         adelanto: adelanto ? adelanto : registro.adelanto,
                         fecha: fecha ? fecha : registro.fecha,
-                        precio:registro.lugar.precio
+                        precio: registro.lugar.precio,
+                        presentismo:presentismo?presentismo:" "
                     }),
             });
             onRequestClose();
             setTimeout(() => {
                 if (resul.ok) {
-                    const horasFloat=horas ? parseFloat(horas) : parseFloat(registro.horas)
-                    const total=parseFloat(registro.lugar.precio)* horasFloat;
-                    const fechaForm=new Date(fecha ? fecha : registro.fecha)
-                    notificacion(200, { _id: id, horas: horas ? horas : registro.horas, adelanto: adelanto ? adelanto : registro.adelanto, fecha:fechaForm ,total:total})
+                    const horasFloat = horas ? parseFloat(horas) : parseFloat(registro.horas)
+                    const total = parseFloat(registro.lugar.precio) * horasFloat;
+                    const fechaForm = new Date(fecha ? fecha : registro.fecha)
+                    notificacion(200, { _id: id, horas: horas ? horas : registro.horas, adelanto: adelanto ? adelanto : registro.adelanto, fecha: fechaForm, total: total })
                 } else {
                     notificacion(400)
                 }
@@ -71,13 +73,13 @@ function ModalEditarRegistro({ isOpen, onRequestClose, registro, notificacion })
 
                     <div className="flex flex-col items-center gap-4 bg-slate-300 h-[500px] w-[330px] rounded-xl p-4 text-[15px]">
                         <div className="flex justify-end">
-                                <button
-                                    disabled={isDisabled}
-                                    onClick={onRequestClose}
-                                    className="text-gray-400 hover:text-gray-500"
-                                >
-                                    <X className="h-5 w-5" />
-                                </button>
+                            <button
+                                disabled={isDisabled}
+                                onClick={onRequestClose}
+                                className="text-gray-400 hover:text-gray-500"
+                            >
+                                <X className="h-5 w-5" />
+                            </button>
                         </div>
                         <div className="w-[300px] flex flex-col items-center">
                             <p className="text-center text-[10px]">Rellene los campos que desea editar, en caso de no querer cambiar todos deje vacio esos campos</p>
@@ -118,6 +120,19 @@ function ModalEditarRegistro({ isOpen, onRequestClose, registro, notificacion })
                                 min={1}
                                 value={adelanto}
                             />
+                        </div>
+
+                        <div className="flex flex-col items-center w-full mt-3">
+                            <p className="mb-2">Presentimo</p>
+                            <select className="border rounded-md p-2 w-[220px] "
+                                defaultValue=""
+                                onChange={(e) => setPresentismo(e.target.value)} >
+                                <option value="" disabled>
+                                    Seleccione una opción
+                                </option>
+                                <option value="Si">Si</option>
+                                <option value="No">No</option>
+                            </select>
                         </div>
 
                         <div className="flex justify-center mt-5">
